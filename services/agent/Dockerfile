@@ -1,5 +1,5 @@
 # Sentinel Node Agent - Dockerfile
-FROM golang:1.21-alpine AS builder
+FROM golang:1.27-alpine AS builder
 
 WORKDIR /build
 
