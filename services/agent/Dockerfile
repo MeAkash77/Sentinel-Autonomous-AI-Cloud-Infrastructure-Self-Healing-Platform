@@ -19,7 +19,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     cmd/agent/main.go
 
 # Final stage
-FROM alpine:3.22
+FROM alpine:3.24
 
 WORKDIR /app
 
