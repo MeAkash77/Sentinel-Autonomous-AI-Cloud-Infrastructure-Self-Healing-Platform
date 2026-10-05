@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#050814" />
+<title>Sentinel — Autonomous AI Cloud Infrastructure & Self-Healing Platform</title>
+<meta name="description" content="Sentinel is an autonomous cloud infrastructure control plane that observes, predicts, acts and learns across Kubernetes workloads with policy-driven orchestration and self-healing automation." />
+<style>
+:root{
+  --bg:#050814;--bg2:#080d1c;--panel:rgba(11,18,38,.72);--panel2:rgba(16,26,52,.76);
+  --line:rgba(140,170,255,.14);--text:#edf4ff;--muted:#91a2c5;--cyan:#57e6ff;--blue:#6b8cff;
+  --violet:#a57bff;--green:#51f0a4;--amber:#ffc66d;--red:#ff6d88;
+  --shadow:0 24px 80px rgba(0,0,0,.42);--radius:24px;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:
+ radial-gradient(circle at 15% 0%,rgba(87,230,255,.10),transparent 28%),
+ radial-gradient(circle at 85% 8%,rgba(165,123,255,.13),transparent 30%),
+ linear-gradient(180deg,#040710 0%,#070b17 45%,#040710 100%);
+ color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:
+ linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+ background-size:50px 50px;mask-image:linear-gradient(to bottom,black,transparent 85%);z-index:-1}
+a{color:inherit;text-decoration:none}.container{width:min(1220px,calc(100% - 40px));margin:auto}
+nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);width:min(1160px,calc(100% - 28px));z-index:50;display:flex;align-items:center;justify-content:space-between;padding:11px 14px 11px 18px;border:1px solid var(--line);border-radius:18px;background:rgba(5,8,20,.72);backdrop-filter:blur(20px);box-shadow:0 10px 50px rgba(0,0,0,.3)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}.brandmark{width:31px;height:31px;border-radius:10px;position:relative;background:conic-gradient(from 180deg,var(--cyan),var(--violet),var(--blue),var(--cyan));box-shadow:0 0 28px rgba(87,230,255,.32)}
+.brandmark:after{content:"";position:absolute;inset:6px;border-radius:7px;background:#071022;border:1px solid rgba(255,255,255,.18)}
+.navlinks{display:flex;gap:20px;color:#aab9d8;font-size:13px}.navlinks a:hover{color:white}
+.navcta{padding:9px 14px;border-radius:11px;background:linear-gradient(135deg,var(--cyan),#7ca1ff);color:#06101d;font-size:12px;font-weight:800}
+.hero{min-height:100vh;padding:145px 0 80px;display:grid;grid-template-columns:1.02fr .98fr;gap:45px;align-items:center}
+.eyebrow{display:inline-flex;gap:9px;align-items:center;border:1px solid rgba(81,240,164,.2);background:rgba(81,240,164,.06);padding:7px 11px;border-radius:99px;color:#9df8c9;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(81,240,164,.7);animation:pulse 1.7s infinite}@keyframes pulse{70%{box-shadow:0 0 0 9px transparent}}
+h1{font-size:clamp(48px,7vw,88px);line-height:.94;letter-spacing:-.055em;margin:20px 0 24px;max-width:850px}
+.gradient{background:linear-gradient(100deg,#fff 12%,#bfeeff 40%,#a78bff 75%,#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:18px;line-height:1.7;color:#9eafd0;max-width:680px;margin:0}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin:31px 0}.btn{border:1px solid var(--line);padding:13px 17px;border-radius:13px;font-size:13px;font-weight:800;cursor:pointer;transition:.25s;display:inline-flex;align-items:center;gap:8px}.btn:hover{transform:translateY(-2px);border-color:rgba(87,230,255,.4)}.btn.primary{background:linear-gradient(135deg,var(--cyan),#829bff);color:#06101d;border:0}.btn.ghost{background:rgba(255,255,255,.025)}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap;color:#7385aa;font-size:11px}.hero-tags span{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:rgba(255,255,255,.02)}
+.hero-visual{height:600px;position:relative;perspective:1100px}
+.orbit{position:absolute;inset:70px 30px 70px 10px;border:1px solid rgba(87,230,255,.12);border-radius:50%;transform:rotateX(67deg) rotateZ(-15deg);box-shadow:0 0 100px rgba(87,230,255,.07);animation:orbit 18s linear infinite}.orbit.o2{inset:100px 70px 105px 50px;transform:rotateX(67deg) rotateZ(55deg);border-color:rgba(165,123,255,.13);animation-duration:24s;animation-direction:reverse}@keyframes orbit{to{transform:rotateX(67deg) rotateZ(345deg)}}
+.core{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:205px;height:205px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(87,230,255,.25),rgba(15,24,52,.9) 45%,#050916 70%);border:1px solid rgba(87,230,255,.35);box-shadow:0 0 60px rgba(87,230,255,.18),inset 0 0 55px rgba(87,230,255,.1);animation:float 4s ease-in-out infinite}@keyframes float{50%{transform:translate(-50%,-55%)}}
+.core-inner{width:118px;height:118px;border-radius:50%;border:1px solid rgba(255,255,255,.13);display:grid;place-items:center;text-align:center;background:radial-gradient(circle,rgba(87,230,255,.15),rgba(8,13,29,.85));font-weight:900;letter-spacing:.1em}.core-inner small{display:block;color:#7892c1;font-size:8px;letter-spacing:.18em;margin-top:5px}
+.node{position:absolute;width:145px;padding:12px;border-radius:15px;border:1px solid var(--line);background:rgba(7,13,29,.82);backdrop-filter:blur(12px);box-shadow:var(--shadow);font-size:10px;animation:nodefloat 5s ease-in-out infinite}.node b{display:block;font-size:12px;margin-bottom:4px}.node span{color:#7587ad}.node .status{color:var(--green);font-weight:800}@keyframes nodefloat{50%{transform:translateY(-9px)}}
+.n1{top:8%;left:1%}.n2{top:17%;right:2%;animation-delay:.7s}.n3{bottom:12%;left:4%;animation-delay:1.2s}.n4{bottom:7%;right:5%;animation-delay:1.8s}.n5{top:50%;left:-2%;animation-delay:2.1s}
+.energy{position:absolute;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);transform-origin:left center;opacity:.65;filter:blur(.3px)}.e1{width:260px;left:22%;top:39%;transform:rotate(18deg)}.e2{width:230px;left:57%;top:37%;transform:rotate(158deg)}.e3{width:260px;left:25%;top:66%;transform:rotate(-18deg)}.e4{width:230px;left:58%;top:64%;transform:rotate(-158deg)}
+.section{padding:95px 0}.section-head{display:flex;justify-content:space-between;gap:25px;align-items:end;margin-bottom:35px}.kicker{color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase}.section h2{font-size:clamp(30px,4vw,52px);line-height:1.02;letter-spacing:-.04em;margin:10px 0 0}.section-head p{max-width:480px;color:var(--muted);line-height:1.65;font-size:14px}
+.live-shell{border:1px solid rgba(87,230,255,.18);border-radius:28px;background:linear-gradient(145deg,rgba(14,23,48,.88),rgba(6,10,23,.9));box-shadow:0 30px 100px rgba(0,0,0,.45);overflow:hidden}
+.live-top{display:flex;justify-content:space-between;align-items:center;padding:17px 20px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.018)}.live-title{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800}.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}.sim-state{color:#7f91b5;font-size:11px}
+.demo{display:grid;grid-template-columns:1fr 300px;min-height:650px}
+.canvas-wrap{position:relative;min-height:650px;background:radial-gradient(circle at 50% 48%,rgba(87,230,255,.07),transparent 42%),#050916}
+#network{width:100%;height:100%;min-height:650px;display:block}
+.overlay-card{position:absolute;top:20px;left:20px;width:235px;padding:15px;border-radius:16px;border:1px solid var(--line);background:rgba(4,9,22,.78);backdrop-filter:blur(12px)}
+.overlay-card .label{font-size:9px;color:#7386aa;text-transform:uppercase;letter-spacing:.14em}.overlay-card .big{font-size:27px;font-weight:900;margin:5px 0}.bar{height:5px;border-radius:99px;background:#111a31;overflow:hidden}.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:.7s}
+.incident-badge{position:absolute;right:20px;top:20px;padding:8px 11px;border-radius:10px;border:1px solid rgba(81,240,164,.2);background:rgba(81,240,164,.06);color:#9cf6c8;font-size:10px;font-weight:900}
+.incident-badge.alert{border-color:rgba(255,109,136,.3);background:rgba(255,109,136,.07);color:#ff9caf}
+.side{border-left:1px solid var(--line);background:rgba(3,8,18,.7);padding:20px;display:flex;flex-direction:column;gap:14px}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.metric{padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.018)}.metric label{font-size:9px;color:#7082a7;text-transform:uppercase;letter-spacing:.08em}.metric strong{display:block;font-size:18px;margin-top:4px}.metric small{color:#69e8aa;font-size:9px}
+.control{padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.018)}.control h4{margin:0 0 9px;font-size:11px}.control p{font-size:10px;color:#7587aa;line-height:1.5;margin:0 0 10px}.control button{width:100%;margin-top:7px;padding:9px;border:1px solid var(--line);background:#0c1429;color:#b9c9e9;border-radius:9px;cursor:pointer;font-size:10px;font-weight:800}.control button:hover{border-color:rgba(87,230,255,.5);color:#fff}
+.eventlog{height:160px;overflow:auto;border-top:1px solid var(--line);margin-top:auto;padding-top:10px}.event{font-size:9px;display:flex;gap:8px;margin:8px 0;color:#8092b5}.event b{color:#cfe0ff}.event i{width:5px;height:5px;border-radius:50%;background:var(--cyan);margin-top:4px;flex:none}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.step{padding:20px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.02);position:relative;overflow:hidden}.step:before{content:"";position:absolute;inset:auto -20px -40px auto;width:100px;height:100px;border-radius:50%;background:rgba(87,230,255,.06);filter:blur(15px)}.num{font-size:10px;color:var(--cyan);font-weight:900}.step h3{font-size:15px;margin:13px 0 8px}.step p{font-size:11px;color:#8293b5;line-height:1.6;margin:0}.arrow{position:absolute;right:-8px;top:47%;color:#60769e;font-size:18px}
+.cap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.cap{padding:23px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,rgba(17,27,55,.65),rgba(8,13,28,.75));transition:.3s}.cap:hover{transform:translateY(-5px);border-color:rgba(87,230,255,.25)}.cap .icon{font-size:22px}.cap h3{font-size:15px;margin:15px 0 7px}.cap p{font-size:11px;color:#8496b8;line-height:1.65;margin:0}.pill{display:inline-block;margin-top:13px;padding:5px 7px;border-radius:7px;background:rgba(87,230,255,.06);color:#8feeff;border:1px solid rgba(87,230,255,.12);font-size:9px}
+.arch{display:grid;grid-template-columns:1fr 1fr;gap:18px}.arch-card{padding:24px;border:1px solid var(--line);border-radius:22px;background:rgba(10,17,35,.7)}.arch-card h3{margin:0 0 20px}.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.flow .box{padding:10px 12px;border-radius:11px;border:1px solid var(--line);font-size:10px;background:#0a1227}.flow .box.hot{border-color:rgba(87,230,255,.28);box-shadow:0 0 24px rgba(87,230,255,.06)}.flow .arr{color:#657ba3}
+.timeline{display:grid;gap:10px}.tl{display:grid;grid-template-columns:92px 1fr;gap:15px;padding:13px 0;border-bottom:1px solid rgba(140,170,255,.08)}.tl:last-child{border-bottom:0}.tl time{font-size:10px;color:#6e82a8}.tl div{font-size:11px;color:#a8b8d7}.tl b{color:#e8f0ff}
+.stack{display:flex;flex-wrap:wrap;gap:8px}.tech{padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02);font-size:10px;color:#b6c6e3}.tech strong{color:#eaf4ff}
+.recruit{padding:35px;border-radius:25px;border:1px solid rgba(165,123,255,.2);background:radial-gradient(circle at 100% 0%,rgba(165,123,255,.13),transparent 38%),linear-gradient(135deg,rgba(18,26,55,.9),rgba(8,12,26,.9));display:grid;grid-template-columns:1.2fr .8fr;gap:25px}.recruit h2{margin:0 0 12px;font-size:31px}.recruit p{color:#91a3c7;font-size:13px;line-height:1.7;margin:0}.impact{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.impact div{padding:14px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.025)}.impact strong{font-size:20px;display:block}.impact span{font-size:9px;color:#7e91b6}
+footer{padding:40px 0 65px;color:#64789f;font-size:10px;display:flex;justify-content:space-between;border-top:1px solid rgba(140,170,255,.08);margin-top:70px}
+.toast{position:fixed;right:20px;bottom:20px;z-index:100;transform:translateY(20px);opacity:0;pointer-events:none;transition:.35s;padding:12px 15px;border:1px solid rgba(81,240,164,.25);background:rgba(7,14,28,.92);backdrop-filter:blur(15px);border-radius:12px;color:#b9f8d7;font-size:11px;box-shadow:var(--shadow)}.toast.show{transform:translateY(0);opacity:1}
+@media(max-width:950px){.hero{grid-template-columns:1fr}.hero-visual{height:500px}.demo{grid-template-columns:1fr}.side{border-left:0;border-top:1px solid var(--line)}.steps{grid-template-columns:1fr 1fr}.cap-grid{grid-template-columns:1fr 1fr}.arch,.recruit{grid-template-columns:1fr}.navlinks{display:none}}
+@media(max-width:620px){.container{width:min(100% - 24px,1220px)}nav{width:calc(100% - 18px)}.hero{padding-top:120px}.hero-visual{height:430px}.node{width:118px}.n2{right:0}.n4{right:0}.steps,.cap-grid{grid-template-columns:1fr}.section{padding:65px 0}.section-head{display:block}.section-head p{margin-top:14px}.demo,.canvas-wrap,#network{min-height:540px}.overlay-card{width:190px}.impact{grid-template-columns:1fr 1fr}footer{display:block}.navcta{display:none}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="brand" href="#top"><span class="brandmark"></span><span>Sentinel</span></a>
+  <div class="navlinks">
+    <a href="#demo">Live Demo</a><a href="#how">How it works</a><a href="#architecture">Architecture</a><a href="#security">Safety</a>
+  </div>
+  <a class="navcta" href="#demo">Launch Simulation</a>
+</nav>
+
+<main id="top">
+<section class="hero container">
+  <div>
+    <span class="eyebrow"><i class="pulse"></i> Autonomous Cloud Control Plane · Phase 5</span>
+    <h1><span class="gradient">Sentinel</span><br/>Infrastructure that heals itself.</h1>
+    <p>Sentinel turns Kubernetes operations into a closed-loop autonomous system: it watches workloads, predicts what is about to go wrong, applies policy-safe changes, and learns from the outcome.</p>
+    <div class="actions">
+      <a class="btn primary" href="#demo">▶ Run the live demo</a>
+      <a class="btn ghost" href="#architecture">Explore the architecture ↓</a>
+    </div>
+    <div class="hero-tags">
+      <span>Python</span><span>Go</span><span>Kubernetes</span><span>Kafka</span><span>FastAPI</span><span>gRPC</span><span>PostgreSQL</span><span>Prometheus</span><span>Grafana</span><span>Vault</span><span>Terraform</span><span>Docker</span>
+    </div>
+  </div>
+  <div class="hero-visual" aria-label="Animated Sentinel infrastructure network">
+    <div class="orbit"></div><div class="orbit o2"></div>
+    <div class="energy e1"></div><div class="energy e2"></div><div class="energy e3"></div><div class="energy e4"></div>
+    <div class="core"><div class="core-inner">SENTINEL<small>AUTONOMOUS CONTROL</small></div></div>
+    <div class="node n1"><b>☁ Production Cluster</b><span>18 workloads · </span><span class="status">● healthy</span></div>
+    <div class="node n2"><b>🧠 Predictive Brain</b><span>Forecasting demand · </span><span class="status">● online</span></div>
+    <div class="node n3"><b>⚡ Event Stream</b><span>Kafka telemetry · </span><span class="status">● flowing</span></div>
+    <div class="node n4"><b>🛡 Policy Guard</b><span>RBAC · Vault · mTLS · </span><span class="status">● enforced</span></div>
+    <div class="node n5"><b>🤖 Remediation Agent</b><span>PatchBot · </span><span class="status">● ready</span></div>
+  </div>
+</section>
+
+<section class="section container" id="demo">
+  <div class="section-head">
+    <div><div class="kicker">Interactive environment</div><h2>See Sentinel react to an incident.</h2></div>
+    <p>This is a front-end simulation of the platform workflow. Click an incident or action and watch the infrastructure, metrics and event stream change in real time.</p>
+  </div>
+  <div class="live-shell">
+    <div class="live-top">
+      <div class="live-title"><span class="live-dot"></span> SENTINEL CONTROL CENTER <span style="color:#5e7198;font-weight:500">/ demo-cluster</span></div>
+      <div class="sim-state" id="simState">SYSTEM NOMINAL · AUTO MODE</div>
+    </div>
+    <div class="demo">
+      <div class="canvas-wrap">
+        <canvas id="network"></canvas>
+        <div class="overlay-card">
+          <div class="label">Workload health</div>
+          <div class="big" id="health">99.98%</div>
+          <div class="bar"><i id="healthbar" style="width:99%"></i></div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;color:#7082a7;font-size:9px"><span>error budget</span><span id="budget">97% remaining</span></div>
+        </div>
+        <div class="incident-badge" id="incidentBadge">● ALL SYSTEMS HEALTHY</div>
+      </div>
+      <aside class="side">
+        <div class="metric-grid">
+          <div class="metric"><label>CPU</label><strong id="cpu">46%</strong><small>stable</small></div>
+          <div class="metric"><label>GPU</label><strong id="gpu">63%</strong><small>balanced</small></div>
+          <div class="metric"><label>Pods</label><strong id="pods">18</strong><small>running</small></div>
+          <div class="metric"><label>Latency</label><strong id="latency">42ms</strong><small>p95</small></div>
+        </div>
+        <div class="control">
+          <h4>⚠ Inject a scenario</h4>
+          <p>Give Sentinel a realistic infrastructure problem and watch the closed loop respond.</p>
+          <button onclick="simulateIncident('cpu')">Simulate traffic spike</button>
+          <button onclick="simulateIncident('pod')">Simulate pod failure</button>
+          <button onclick="simulateIncident('deploy')">Simulate bad deployment</button>
+        </div>
+        <div class="control">
+          <h4>⚙ Autonomous actions</h4>
+          <button onclick="action('scale')">Predictive autoscale</button>
+          <button onclick="action('heal')">Self-heal workload</button>
+          <button onclick="action('canary')">Run canary + health gate</button>
+          <button onclick="action('chaos')">Run chaos test</button>
+        </div>
+        <div class="eventlog" id="eventlog"></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="section container" id="how">
+  <div class="section-head"><div><div class="kicker">The autonomous loop</div><h2>From signal to safe action.</h2></div><p>Instead of waiting for an operator to notice a dashboard alert, Sentinel continuously closes the gap between observation and remediation.</p></div>
+  <div class="steps">
+    <div class="step"><div class="num">01 / OBSERVE</div><h3>See everything</h3><p>Telemetry arrives from Kubernetes workloads, nodes and services through metrics and event streams.</p><span class="arrow">→</span></div>
+    <div class="step"><div class="num">02 / PREDICT</div><h3>Understand risk</h3><p>InfraMind-style prediction and policy evaluation identify demand, anomalies and optimization opportunities.</p><span class="arrow">→</span></div>
+    <div class="step"><div class="num">03 / ACT</div><h3>Change safely</h3><p>Sentinel executes reconciliation, scaling, rollout or remediation only within configured safety boundaries.</p><span class="arrow">→</span></div>
+    <div class="step"><div class="num">04 / LEARN</div><h3>Close the loop</h3><p>Outcomes become feedback: success, failure, time-to-fix and agent performance improve future decisions.</p></div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="section-head"><div><div class="kicker">What Sentinel automates</div><h2>A platform, not another dashboard.</h2></div><p>The system combines orchestration, observability, deployment safety and autonomous remediation into one operating model.</p></div>
+  <div class="cap-grid">
+    <div class="cap"><div class="icon">🧠</div><h3>Predictive Autoscaling</h3><p>Anticipate workload demand instead of reacting after saturation. Scale compute based on expected pressure and policy constraints.</p><span class="pill">Kubernetes · policy engine</span></div>
+    <div class="cap"><div class="icon">🩹</div><h3>Self-Healing</h3><p>Detect unhealthy workloads and execute bounded recovery actions through reconciliation and health-aware automation.</p><span class="pill">reconciliation · health gates</span></div>
+    <div class="cap"><div class="icon">🚦</div><h3>Canary Deployments</h3><p>Progressively shift traffic, observe health signals and automatically roll back when deployment quality crosses a safety threshold.</p><span class="pill">canary · rollback</span></div>
+    <div class="cap"><div class="icon">🤖</div><h3>AI Agent Orchestration</h3><p>Agent Controller manages remediation tasks, heartbeats, queues and outcomes. PatchBot can analyze CI/CD failures and prepare fixes.</p><span class="pill">PatchBot · Agent SDK</span></div>
+    <div class="cap"><div class="icon">🛡️</div><h3>Policy & Guardrails</h3><p>Rate limits, confidence thresholds, blast-radius controls and change-freeze windows keep autonomous actions bounded.</p><span class="pill">RBAC · Vault · mTLS</span></div>
+    <div class="cap"><div class="icon">📡</div><h3>Observability</h3><p>Prometheus metrics, Grafana dashboards and Kafka events provide a continuous view of workload health and controller activity.</p><span class="pill">Prometheus · Grafana · Kafka</span></div>
+  </div>
+</section>
+
+<section class="section container" id="architecture">
+  <div class="section-head"><div><div class="kicker">Architecture</div><h2>Brain → policy → execution → outcome.</h2></div><p>Designed as a cloud-native control plane with clear boundaries between prediction, policy decisions, execution and telemetry.</p></div>
+  <div class="arch">
+    <div class="arch-card">
+      <h3>Control plane</h3>
+      <div class="flow">
+        <div class="box hot">Telemetry</div><div class="arr">→</div><div class="box hot">InfraMind / prediction</div><div class="arr">→</div><div class="box">Policy Engine</div><div class="arr">→</div><div class="box hot">Pipeline Controller</div><div class="arr">→</div><div class="box">Kubernetes</div>
+      </div>
+      <div style="margin-top:20px;color:#7f91b5;font-size:10px;line-height:1.7">FastAPI control APIs expose operations; gRPC connects predictive infrastructure intelligence; the Kubernetes driver converts plans into controlled cluster actions.</div>
+    </div>
+    <div class="arch-card">
+      <h3>Event + data plane</h3>
+      <div class="flow">
+        <div class="box">Node Agents</div><div class="arr">→</div><div class="box hot">Kafka</div><div class="arr">→</div><div class="box">PostgreSQL</div><div class="arr">↔</div><div class="box">Prometheus</div><div class="arr">→</div><div class="box hot">Grafana</div>
+      </div>
+      <div style="margin-top:20px;color:#7f91b5;font-size:10px;line-height:1.7">The platform is event-driven and observable by design, with persistent state, metrics and operational dashboards supporting closed-loop decisions.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section container" id="security">
+  <div class="section-head"><div><div class="kicker">Safety by design</div><h2>Autonomy with brakes.</h2></div><p>Sentinel is built around the idea that automation should be powerful enough to act and constrained enough to be trusted.</p></div>
+  <div class="arch">
+    <div class="arch-card">
+      <h3>Deployment safety pipeline</h3>
+      <div class="timeline">
+        <div class="tl"><time>PRE-CHECK</time><div><b>Policy evaluation</b> — validate cost, quota, SLA/SLO and change-freeze constraints.</div></div>
+        <div class="tl"><time>CANARY</time><div><b>Progressive rollout</b> — expose a limited slice of traffic before wider execution.</div></div>
+        <div class="tl"><time>HEALTH</time><div><b>Health gate</b> — score latency, errors and workload signals continuously.</div></div>
+        <div class="tl"><time>ROLLBACK</time><div><b>Automatic recovery</b> — revert when health thresholds are breached.</div></div>
+      </div>
+    </div>
+    <div class="arch-card">
+      <h3>Security & governance</h3>
+      <div class="stack">
+        <div class="tech"><strong>mTLS</strong> · service identity</div><div class="tech"><strong>Vault</strong> · secrets</div><div class="tech"><strong>RBAC</strong> · authorization</div><div class="tech"><strong>JWT</strong> · authentication</div><div class="tech"><strong>Audit logs</strong> · traceability</div><div class="tech"><strong>Rate limits</strong> · action control</div><div class="tech"><strong>Blast radius</strong> · bounded changes</div><div class="tech"><strong>Chaos tests</strong> · resilience</div>
+      </div>
+      <div style="margin-top:20px;padding:14px;border-radius:12px;background:rgba(81,240,164,.045);border:1px solid rgba(81,240,164,.12);font-size:10px;color:#94cdb0">✓ Autonomous actions are designed to remain observable, policy-checked and reversible.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="section-head"><div><div class="kicker">Technology map</div><h2>Built like a real cloud platform.</h2></div><p>The stack spans application services, infrastructure orchestration, event streaming, observability and security.</p></div>
+  <div class="stack">
+    <div class="tech"><strong>Python 3.11+</strong> · control & agents</div><div class="tech"><strong>Go 1.21+</strong> · node agent</div><div class="tech"><strong>FastAPI</strong> · REST control plane</div><div class="tech"><strong>gRPC</strong> · prediction bridge</div><div class="tech"><strong>Kubernetes</strong> · execution substrate</div><div class="tech"><strong>Kafka</strong> · event streaming</div><div class="tech"><strong>PostgreSQL</strong> · state</div><div class="tech"><strong>Prometheus</strong> · metrics</div><div class="tech"><strong>Grafana</strong> · operations</div><div class="tech"><strong>Helm</strong> · deployment</div><div class="tech"><strong>HashiCorp Vault</strong> · secrets</div><div class="tech"><strong>Terraform</strong> · infrastructure</div><div class="tech"><strong>Docker</strong> · containers</div><div class="tech"><strong>mTLS</strong> · service security</div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="recruit">
+    <div>
+      <div class="kicker">For engineering teams & recruiters</div>
+      <h2>Why this project matters.</h2>
+      <p>Sentinel demonstrates systems thinking across distributed infrastructure: event-driven architecture, Kubernetes reconciliation, predictive scaling, autonomous agents, safe deployments, security boundaries, observability and failure recovery. The key idea is not “AI added to DevOps” — it is an autonomous control loop where every action is measurable and constrained.</p>
+      <div class="actions" style="margin-bottom:0"><a class="btn primary" href="#demo">Experience the simulation</a><a class="btn ghost" href="#architecture">Review architecture</a></div>
+    </div>
+    <div class="impact">
+      <div><strong>Observe</strong><span>telemetry + events</span></div>
+      <div><strong>Predict</strong><span>demand + risk</span></div>
+      <div><strong>Act</strong><span>policy-safe automation</span></div>
+      <div><strong>Learn</strong><span>outcome feedback</span></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="container">
+  <div>Sentinel · Autonomous AI Cloud Infrastructure & Self-Healing Platform</div>
+  <div>Interactive portfolio demonstration · Built with HTML, CSS & JavaScript</div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const state={health:99.98,cpu:46,gpu:63,pods:18,latency:42,budget:97,mode:"nominal",incident:false,scenario:""};
+const $=id=>document.getElementById(id);
+function log(msg,type="info"){
+  const el=document.createElement("div");el.className="event";
+  el.innerHTML=`<i></i><span>${new Date().toLocaleTimeString([], {hour12:false})}</span><b>${msg}</b>`;
+  $("eventlog").prepend(el);
+  while($("eventlog").children.length>9)$("eventlog").lastChild.remove();
+}
+function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2400)}
+function render(){
+  $("health").textContent=state.health.toFixed(2)+"%";
+  $("healthbar").style.width=Math.max(4,state.health)+"%";
+  $("cpu").textContent=Math.round(state.cpu)+"%";
+  $("gpu").textContent=Math.round(state.gpu)+"%";
+  $("pods").textContent=Math.round(state.pods);
+  $("latency").textContent=Math.round(state.latency)+"ms";
+  $("budget").textContent=Math.max(0,Math.round(state.budget))+"% remaining";
+  $("simState").textContent=state.incident?"AUTONOMOUS RESPONSE ACTIVE · "+state.scenario.toUpperCase():"SYSTEM NOMINAL · AUTO MODE";
+  $("incidentBadge").textContent=state.incident?"● INCIDENT DETECTED · CONTAINING":"● ALL SYSTEMS HEALTHY";
+  $("incidentBadge").className="incident-badge"+(state.incident?" alert":"");
+}
+function tween(changes,steps=14,done){
+  const start={...state};let i=0;
+  const timer=setInterval(()=>{
+    i++;const t=i/steps;for(const k in changes)state[k]=start[k]+(changes[k]-start[k])*t;render();
+    if(i>=steps){clearInterval(timer);if(done)done()}
+  },45);
+}
+function simulateIncident(kind){
+  state.incident=true;
+  if(kind==="cpu"){state.scenario="traffic spike";tween({cpu:91,gpu:78,pods:18,latency:142,health:98.72,budget:84},10,()=>{log("Predictive signal: demand spike detected");toast("Sentinel detected rising demand")})}
+  if(kind==="pod"){state.scenario="pod failure";tween({cpu:64,gpu:70,pods:17,latency:109,health:97.84,budget:76},10,()=>{log("Kubernetes event: pod became unhealthy");toast("Unhealthy workload isolated")})}
+  if(kind==="deploy"){state.scenario="bad deployment";tween({cpu:59,gpu:66,pods:19,latency:188,health:95.91,budget:63},10,()=>{log("Health gate: canary error rate exceeded threshold");toast("Canary blocked by health gate")})}
+  log("Observe → anomaly classified → policy evaluation started");
+}
+function action(kind){
+  if(kind==="scale"){
+    state.incident=true;state.scenario="predictive scaling";
+    tween({cpu:54,gpu:66,pods:24,latency:48,health:99.93,budget:96},18,()=>{state.incident=false;log("Autoscaler: capacity added before saturation");toast("Predictive autoscaling completed")});
+    log("Forecast: workload demand rising · scale plan approved");
+  }
+  if(kind==="heal"){
+    state.incident=true;state.scenario="self healing";
+    tween({cpu:48,gpu:63,pods:18,latency:45,health:99.99,budget:97},18,()=>{state.incident=false;log("Reconciliation: desired state restored");toast("Workload healed automatically")});
+    log("Remediation: unhealthy replica replaced · health gate passed");
+  }
+  if(kind==="canary"){
+    state.incident=true;state.scenario="canary rollout";
+    tween({cpu:52,gpu:65,pods:20,latency:46,health:99.97,budget:97},18,()=>{state.incident=false;log("Canary: 10% → 25% → 50% → 100% traffic");toast("Canary promoted after health checks")});
+    log("Deployment: canary started · monitoring error rate + latency");
+  }
+  if(kind==="chaos"){
+    state.incident=true;state.scenario="chaos test";
+    tween({cpu:83,gpu:81,pods:15,latency:132,health:96.8,budget:70},10,()=>setTimeout(()=>tween({cpu:49,gpu:63,pods:18,latency:43,health:99.98,budget:97},18,()=>{state.incident=false;log("Chaos test passed: service recovered within policy window");toast("Resilience test passed")}),500));
+    log("Chaos: controlled pod failure injected · recovery measured");
+  }
+}
+function reset(){
+  Object.assign(state,{health:99.98,cpu:46,gpu:63,pods:18,latency:42,budget:97,mode:"nominal",incident:false,scenario:""});
+  render();log("Simulation reset · all systems nominal");toast("Demo reset");
+}
+log("Control plane connected · telemetry stream online");
+log("Policy engine ready · autonomous mode enabled");
+render();
+
+// Canvas: pseudo-3D cluster map with animated particles and health rings.
+const canvas=$("network"),ctx=canvas.getContext("2d");
+let W=0,H=0,t=0;
+const nodes=[];
+function resize(){const r=canvas.getBoundingClientRect();W=canvas.width=Math.floor(r.width*devicePixelRatio);H=canvas.height=Math.floor(r.height*devicePixelRatio);ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);W=r.width;H=r.height;
+  nodes.length=0;for(let i=0;i<22;i++){const a=Math.random()*Math.PI*2,rad=80+Math.random()*Math.min(W,H)*.29;nodes.push({a,rad,z:.45+Math.random()*.7,s:2+Math.random()*2.8,phase:Math.random()*8})}}
+window.addEventListener("resize",resize);resize();
+function draw(){
+  t+=.008;ctx.clearRect(0,0,W,H);
+  const cx=W*.5,cy=H*.5;
+  // perspective grid
+  ctx.save();ctx.globalAlpha=.12;ctx.strokeStyle="#5fe8ff";ctx.lineWidth=.5;
+  for(let i=-10;i<=10;i++){ctx.beginPath();ctx.moveTo(cx+i*65,cy-20);ctx.lineTo(cx+i*140,cy+H*.55);ctx.stroke()}
+  for(let j=0;j<7;j++){ctx.beginPath();ctx.ellipse(cx,cy+30+j*55,180+j*55,35+j*11,0,0,Math.PI*2);ctx.stroke()}ctx.restore();
+  // links
+  nodes.forEach((n,i)=>{
+    const a=n.a+t*(i%2?-.08:.06);const x=cx+Math.cos(a)*n.rad*n.z;const y=cy+Math.sin(a)*n.rad*.58*n.z;
+    n.x=x;n.y=y;
+  });
+  nodes.forEach((n,i)=>{const m=nodes[(i+3)%nodes.length];ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(m.x,m.y);ctx.strokeStyle=i%4===0?"rgba(87,230,255,.18)":"rgba(130,150,210,.08)";ctx.lineWidth=1;ctx.stroke()});
+  // particles moving along links
+  for(let i=0;i<9;i++){const a=nodes[i],b=nodes[(i+3)%nodes.length],q=(t*1.4+i*.19)%1;const x=a.x+(b.x-a.x)*q,y=a.y+(b.y-a.y)*q;ctx.beginPath();ctx.arc(x,y,2.2,0,Math.PI*2);ctx.fillStyle="#64ebff";ctx.shadowBlur=12;ctx.shadowColor="#64ebff";ctx.fill();ctx.shadowBlur=0}
+  // nodes
+  nodes.forEach((n,i)=>{const pulse=1+Math.sin(t*3+n.phase)*.18;ctx.beginPath();ctx.arc(n.x,n.y,n.s*pulse,0,Math.PI*2);ctx.fillStyle=i%7===0?"#a57bff":"#57e6ff";ctx.shadowBlur=15;ctx.shadowColor=i%7===0?"#a57bff":"#57e6ff";ctx.fill();ctx.shadowBlur=0});
+  // central reactor
+  const r=65+Math.sin(t*2)*3;let g=ctx.createRadialGradient(cx,cy,4,cx,cy,r*2);g.addColorStop(0,"rgba(87,230,255,.18)");g.addColorStop(1,"rgba(87,230,255,0)");
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,r*2,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle="rgba(87,230,255,.32)";ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle="rgba(165,123,255,.2)";ctx.beginPath();ctx.arc(cx,cy,r+18,-t,t+2);ctx.stroke();
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
